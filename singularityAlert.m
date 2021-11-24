@@ -1,1 +1,1 @@
-function [outputArg1,outputArg2] = singularityAlert(inputArg1,inputArg2)%code for planning the optimal pathoutputArg1 = inputArg1;outputArg2 = inputArg2;end
+function [outputArg1,outputArg2] = singularityAlert(inputArg1,inputArg2)%code for planning the optimal pathoutputArg1 = inputArg1;outputArg2 = inputArg2;end
