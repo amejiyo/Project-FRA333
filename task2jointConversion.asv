@@ -1,0 +1,5 @@
+function [alert, via_point_joint] = task2jointConversion(via_point_task, command)
+% check possible access + convert task to joint
+length = 
+end
+
