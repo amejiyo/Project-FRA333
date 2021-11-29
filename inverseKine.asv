@@ -1,0 +1,35 @@
+function [q,flag] = inverseKine(p)
+gamma = [1,1,-1,-1;1,-1,1,-1];
+L1 = 0.05;          %parameter Length1
+L2 = 0.25;          %parameter Length2
+L3 = 0.3;           %parameter Length3
+h1 = 0.1;           %parameter Height1
+q = [];             %to create q variables (default = 0)
+z_temp = p(3,:) - h1;     
+flag = [];
+for i=1:length(gamma)
+%     q_temp = [0;0;0];
+%     q_temp(1) = gamma(1,i)*atan2(p(2,:),p(1,:));
+%     x_temp = sqrt(p(1,:).^2 + p(2,:).^2) - gamma(1,i)*L1;
+%     l_temp = sqrt(x_temp.^2 + z_temp.^2);
+%     c3 = (l_temp.^2 - L2^2 - L3^2)/(L2*L3);
+%     condi1 = sqrt(p(1,:).^2 + p(2,:).^2) - L1+L2+L3 < zeros(1,length(p));
+%     condi2 = c3 > ones(1,length(p));
+%     if any(condi1,'all') || any(condi2,'all')
+%         flag(i) = 0;
+%         q(:,:,i) = zeros(3,length(p));
+%     else   
+%         s3 = -gamma(2,i)*sqrt(1 - c3^2);
+%         q_temp(3) = pi/2 + atan2(s3,c3);
+%         q_temp(2) = pi/2 + gamma(2,i)*(-gamma(2,i)*atan2(L3*s3,L2-L3*c3) + gamma(2,i)*atan2(z_temp,x_temp));
+%         flag(i) = 1;          
+%         q(:,:,i) = round(wrapToPi(q_temp),6);  
+%     end
+    r = gamma(1,i)*sqrt(p(1)^2 + p(2)^2);
+    q(1) = atan2(p(2)/r,p(1)/r);
+    c3 = ((r-L1)^2 + (p(3) - h1)^2 -L2^2 - L3^2)/(2^L2*L3);
+    s3 = gamma(2,i)*sqrt(1-c3^2);
+    q(3) = atan2(s3,c3)-pi/4;
+    q(2) = atan2((r-L1),(p(3) - h1)) - atan2(L3*s3,L2+ L3*c3) - pi/4;
+    flag(i) = 1;
+end
