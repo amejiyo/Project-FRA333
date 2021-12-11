@@ -7,7 +7,7 @@ h1 = 0.1;           %parameter Height1
 q = [];             %to create q variables (default = 0)    
 flag = [];
 for i=1:length(gamma)
-    q_temp = [0;0;0];
+    q_temp = [99;99;99];
     r = gamma(1,i)*sqrt(p(1,:).^2 + p(2,:).^2);
     if ((r-L1).^2 + (p(3,:)-h1).^2 - L2^2 - L3^2)/(2*L2*L3) >1
         flag(i) = 0;

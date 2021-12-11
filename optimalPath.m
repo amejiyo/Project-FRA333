@@ -1,21 +1,48 @@
-function [select_via_point_joint] = optimalPath(via_point_joint_all)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
-[x,y,z] = size(via_point_joint_all);
-x=randi(z,z^y,y);
-sum1 = [];
-for i=1:length(x)
-    sum1(i) = 0;
-    for j=1:y
-        temp = x(i,:);
-        sum1(i) = sum(abs(via_point_joint_all(:,j, temp(j)))) + sum1(i);
-    end
+function [selected_via_point_joint, all_via_point_joint, cost] = optimalPath(via_point_joint_all, mode)
+
+%INPUT : [via_point_joint_all] dimension        = 3 * 4 * N
+%OUTPUT: [selected_via_point_joint] dimension   = 3 * N
+
+[row,col,dep] = size(via_point_joint_all);
+
+switch mode
+    case "shortest_path"
+        all_via_point_joint = permute(via_point_joint_all(:,:,1), [1 3 2]);
+        %dimension = 3 * N * K
+        cost = zeros(col, 1);
+        %dimension = K * 1      which K is all possibility
+              
+
+        for depth = 1:dep-1
+%         for depth = 1:2
+            [r,c,d] = size(all_via_point_joint);
+            
+            via_point_joint_temp = [];
+            cost_temp = [];
+            
+            %For each next via-point's pose
+            for next = 1:col
+                %For each current record
+                for current = 1:d
+                    %Append next via-point
+                    via_point_joint_temp = cat(3, via_point_joint_temp,...
+                    cat(2, all_via_point_joint(:,:,current), via_point_joint_all(:,next,depth+1))...
+                    );
+                    %Append current to next via-point path cost
+                    cost_temp = cat(1, cost_temp,...
+                    cost(current,:) + max(abs(via_point_joint_all(:,next,depth+1) - all_via_point_joint(:,depth,current)))...
+                    );
+                end
+            end
+            all_via_point_joint = via_point_joint_temp;
+            cost = cost_temp;
+        end
 end
-index1 = find(sum1==(min(sum1)))
-select_via_point_joint = [];
-for i=1:y
-    temp = x(index1,:);
-    select_via_point_joint(:,i) = via_point_joint_all(:,i,temp(i));
-end
+%Find minimum path cost
+[min_cost, min_idx] = min(cost)
+
+selected_via_point_joint = all_via_point_joint(:,:,min_idx);
+
+
 end
 
