@@ -1,9 +1,9 @@
-function [command,via_point_task] = readVariable
+function [command,via_point_task] = readVariable(command,via_point)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-input_command = importdata('robot_command_v0.txt');
+input_command = importdata(command);
 input_command = input_command{1};
-input_via_point = importdata('via_points_info_v0.txt');
+input_via_point = importdata(via_point);
 input_via_point = input_via_point{1};
 
 command = [];
