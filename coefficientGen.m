@@ -1,25 +1,43 @@
-function [C,t_i,T,flag] = coefficientGen(via_points)
+function [C,t_i,T,flag] = coefficientGen(via_points, v_max, a_max)
 
-C = [];
 flag = 0;
-T = [];
-t_i = [];
-t = 0;
-for i = 1:length(via_points)-1
-    totDis = via_points(:,i+1) - via_points(:,i);
-    totDis_all = sum(sqrt((via_points(:,i) - via_points(:,i+1)).^2));
-%     T(i) = 2*sqrt(totDis_all/0.5);
-    T(i) = floor(sqrt(10*totDis_all/(0.5*sqrt(3))));
-    t_i(i) = t;
-    C(:,:,i) = [via_points(:,i),[0;0;0],[0;0;0], (totDis.*10)./(T(i)^3), -totDis.*15/T(i)^4, 6*totDis./T(i)^5];
-    t = t + T(i);
-    v_eq = [1,2*(T(i)/2),3*(T(i)/2)^2,4*(T(i)/2)^3,5*(T(i)/2)^4];
-    vmax = C(:,2:6,i)*v_eq'; 
-    if t-T(end) >120
-        flag = 1;
-    elseif abs(vmax) > 1.75
-        flag = 1;
+
+C = []; t_i = []; T = 0;
+Tk_prev = 0; Tk_amax = [0;0;0];
+
+for sub = 1:length(via_points)-1
+    
+    %Search for Tk by maximum velocity condition
+    Tk_vmax = abs((15/8*(via_points(:,sub+1)-via_points(:,sub))) / v_max);
+    
+    %Search for Tk by maximum acceleration condition
+    syms tau
+    EQN = [a_max a_max;a_max a_max;a_max a_max] == (6 *( 10/tau.^3 .*(via_points(:,sub+1)-via_points(:,sub)))* (tau/6.*([3+3^(1/2) 3-3^(1/2)])))+...
+                                                   (12*(-15/tau.^4 .*(via_points(:,sub+1)-via_points(:,sub)))* (tau/6.*([3+3^(1/2) 3-3^(1/2)])).^2)+...
+                                                   (20*(  6/tau.^5 .*(via_points(:,sub+1)-via_points(:,sub)))* (tau/6.*([3+3^(1/2) 3-3^(1/2)])).^3);
+    temp = zeros(3,2);
+    for r=1:3
+        if (via_points(r,sub+1) - via_points(r,sub) ~= 0)
+            temp(r,:) = [vpasolve(EQN(r,1), [0 Inf]) vpasolve(EQN(r,2), [0 Inf])];
+        end
     end
+    Tk_amax = max(temp);
+
+    %Select the maximum Tk from both conditions
+    Tk = max([max(Tk_vmax) max(Tk_amax)]);
+    %Add timestamp each sub-trajectory
+    t_i(:,sub) = Tk_prev;
+    %Save the previous timestamp
+    Tk_prev = Tk_prev + Tk; 
+    %Convert symbolic values to MATLAB double precision 
+    T = double(Tk_prev);
+    
+    C(:,0+1,sub) = via_points(:,sub);   % initial position
+    C(:,1+1,sub) = 0;                   % initial velocity
+    C(:,2+1,sub) = 0;                   % initial acceleration
+
+    C(:,3+1,sub) = 10/Tk.^3 *(via_points(:,sub+1)-via_points(:,sub));
+    C(:,4+1,sub) =-15/Tk.^4 *(via_points(:,sub+1)-via_points(:,sub));
+    C(:,5+1,sub) =  6/Tk.^5 *(via_points(:,sub+1)-via_points(:,sub));
 end
-T = t;
 end
