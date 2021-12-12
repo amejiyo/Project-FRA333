@@ -40,4 +40,5 @@ for sub = 1:length(via_points)-1
     C(:,4+1,sub) =-15/Tk.^4 *(via_points(:,sub+1)-via_points(:,sub));
     C(:,5+1,sub) =  6/Tk.^5 *(via_points(:,sub+1)-via_points(:,sub));
 end
+t_i = t_1.*1.5; T = T*1.5;
 end
