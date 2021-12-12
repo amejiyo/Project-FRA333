@@ -1,7 +1,6 @@
-function [C_t, t_i, tau] = coefficientGenTask(selected_via_point_joint,t_i,tau)
+function [C_t, t_i, tau] = coefficientGenTask(p,t_i,tau)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-p = forwardKine(selected_via_point_joint);
 t = t_i;
 t(end+1) = tau;
 for i = 1:length(p)-1

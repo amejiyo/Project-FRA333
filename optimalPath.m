@@ -4,7 +4,7 @@ function [selected_via_point_joint, all_via_point_joint, cost] = optimalPath(via
 %OUTPUT: [selected_via_point_joint] dimension   = 3 * N
 
 [row,col,dep] = size(via_point_joint_all);
-
+via_point_joint_all(:,:,1) = zeros(3,4);
 switch mode
     case "shortest_path"
         all_via_point_joint = permute(via_point_joint_all(:,:,1), [1 3 2]);

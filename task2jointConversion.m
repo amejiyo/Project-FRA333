@@ -2,7 +2,8 @@ function [alert, via_point_joint] = task2jointConversion(via_point_task)
 % check possible access + convert task to joint
 via_point_joint = [];
 alert = [];
-for j=1:length(via_point_task)
+size_v = size(via_point_task);
+for j=1:size_v(2)
     alert_temp = 1;
     [q,flag] = inverseKine(via_point_task(:,j));
 %     if all(flag==0)
@@ -14,8 +15,8 @@ for j=1:length(via_point_task)
 %             via_point_joint(:,i,j) = q(:,column(i));
 %         end
 %     end
-%     alert(j) = alert_temp;
+    alert(j) = alert_temp;
     via_point_joint(:,:,j) = q;
 end
-% via_point_joint = permute(via_point_joint, [1 3 2]);
+
 end
