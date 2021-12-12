@@ -1,7 +1,7 @@
-function [alert, alert_idx, border] = checkSingularity(q, t)
+function [alert, alert_idx, border,J_v] = checkSingularity(q, t)
     alert = 0;
     alert_idx = []; border = []; prev = 0;
-    e = 0.001;
+    e = 1e-6;
     
     [R,P,R_e,p_e] = forwardKine(q);
     
@@ -20,8 +20,8 @@ function [alert, alert_idx, border] = checkSingularity(q, t)
         ];
 
         J_v = J_e(4:6,:);
-
-        if det(J_v) < e
+        
+        if abs(det(J_v)) < e
             alert = 1;
             if (prev==0) 
                 border = [border t(i)];
