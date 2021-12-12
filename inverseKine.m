@@ -19,5 +19,6 @@ for i=1:length(gamma)
         q_temp(2) = atan2((p(3,:) - h1),(r-L1)) - atan2(L3*s3,L2+ L3*c3) - pi/2;
         flag(i) = 1;
     end
+    q_temp = wrapToPi(q_temp);
     q(:,i) = round((q_temp),6);
 end

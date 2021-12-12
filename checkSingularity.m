@@ -1,7 +1,7 @@
 function [alert, alert_idx, border,J_v] = checkSingularity(q, t)
     alert = 0;
     alert_idx = []; border = []; prev = 0;
-    e = 1e-6;
+    e = 1e-3;
     
     [R,P,R_e,p_e] = forwardKine(q);
     
