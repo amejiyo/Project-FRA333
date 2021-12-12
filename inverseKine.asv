@@ -1,5 +1,5 @@
 function [q,flag] = inverseKine(p)
-gamma = [1,1,1,1;1,-1,1,-1];
+gamma = [1,-1]
 L1 = 0.05;          %parameter Length1
 L2 = 0.25;          %parameter Length2
 L3 = 0.3;           %parameter Length3
@@ -8,7 +8,7 @@ q = [];             %to create q variables (default = 0)
 flag = [];
 for i=1:length(gamma)
     q_temp = [99;99;99];
-    r = gamma(1,i)*sqrt(p(1,:).^2 + p(2,:).^2);
+    r = sqrt(p(1,:).^2 + p(2,:).^2);
     if ((r-L1).^2 + (p(3,:)-h1).^2 - L2^2 - L3^2)/(2*L2*L3) >1
         flag(i) = 0;
     else
